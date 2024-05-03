@@ -5,30 +5,30 @@ contract CasaInteligente {
     address public donoAtual;
     address public donoAnterior;
     string public localizacao;
+    uint256 public valorCasa;
 
-    // event CasaVendida(address indexed comprador, uint256 valor, string novaLocalizacao);
-    event CasaVendida(address indexed comprador, string novaLocalizacao);
+    event CasaVendida(address indexed comprador, uint256 valor, string novaLocalizacao);
 
-    constructor(string memory _localizacao) {
+    constructor(string memory _localizacao, uint256 _valorInicial) {
         donoAtual = msg.sender;
         localizacao = _localizacao;
+        valorCasa = _valorInicial;
     }
 
-    // function venderCasa(address _novoDono, uint256 _valor, string memory _novaLocalizacao) public payable {
-    function venderCasa(address _novoDono, string memory _novaLocalizacao) public {
+    function venderCasa(address _novoDono, uint256 _valorCompra, string memory _novaLocalizacao) public payable {
         require(msg.sender == donoAtual, "Somente o dono atual pode vender a casa.");
         require(_novoDono != address(0), "Endereco do novo dono invalido.");
-        // require(msg.value == _valor, "O valor enviado nao corresponde ao preco da casa.");
+        require(_valorCompra > valorCasa, "O valor de compra e menor do que o valor atual.");
 
         donoAnterior = donoAtual;
         donoAtual = _novoDono;
         localizacao = _novaLocalizacao;
+        valorCasa = _valorCompra;
 
-        // emit CasaVendida(_novoDono, _valor, _novaLocalizacao);
-        emit CasaVendida(_novoDono, _novaLocalizacao);
+        emit CasaVendida(_novoDono, _valorCompra, _novaLocalizacao);
     }
 
-    function obterDetalhes() public view returns (address, address, string memory) {
-        return (donoAtual, donoAnterior, localizacao);
+    function obterDetalhes() public view returns (address, address, string memory, uint256) {
+        return (donoAtual, donoAnterior, localizacao, valorCasa);
     }
 }
