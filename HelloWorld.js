@@ -13,7 +13,39 @@ window.addEventListener('load', async () => {
     // Carregar contrato
     const contractAddress = 'COLOQUE_O_ENDEREÇO_DO_CONTRATO_AQUI';
     const contractABI = [
-        // Coloque aqui o ABI do contrato
+        [
+        	{
+        		"inputs": [],
+        		"stateMutability": "nonpayable",
+        		"type": "constructor"
+        	},
+        	{
+        		"inputs": [
+        			{
+        				"internalType": "string",
+        				"name": "newMessage",
+        				"type": "string"
+        			}
+        		],
+        		"name": "changeMessage",
+        		"outputs": [],
+        		"stateMutability": "nonpayable",
+        		"type": "function"
+        	},
+        	{
+        		"inputs": [],
+        		"name": "displayMessage",
+        		"outputs": [
+        			{
+        				"internalType": "string",
+        				"name": "",
+        				"type": "string"
+        			}
+        		],
+        		"stateMutability": "view",
+        		"type": "function"
+        	}
+        ]
     ];
     window.contract = new web3.eth.Contract(contractABI, contractAddress);
 
