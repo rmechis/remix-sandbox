@@ -11,7 +11,7 @@ window.addEventListener('load', async () => {
     }
 
     // Carregar contrato
-    const contractAddress = 'COLOQUE_O_ENDEREÇO_DO_CONTRATO_AQUI';
+    const contractAddress = '0x80552669208ef34ea88c62288a9e98bdf7125a7f';
     const contractABI = [
         [
         	{
