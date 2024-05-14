@@ -4,16 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DApp HelloWorld</title>
-    <script src="https://cdn.jsdelivr.net/npm/web3@1.3.0/dist/web3.min.js"></script>
-    <script src="HelloWorld.js"></script> 
 </head>
 <body>
-    <h1>HelloWorld</h1>
-    <div>
-        <p>Mensagem atual: <span id="mensagem"></span></p>
-        <label for="novaMensagem">Nova mensagem:</label>
-        <input type="text" id="novaMensagem">
-        <button onclick="alterarMensagem()">Alterar Mensagem</button>
-    </div>
+    <h1>Conteúdo da Variável de Estado:</h1>
+    <p id="mensagem"></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.3.5/dist/web3.min.js"></script>
+    <script>
+        window.addEventListener('load', async () => {
+            // Verificar se o Metamask está instalado
+            if (window.ethereum) {
+                window.web3 = new Web3(window.ethereum);
+                await window.ethereum.enable(); // Solicitar permissão para acessar a carteira do usuário
+            } else {
+                console.log('Instale o Metamask!');
+            }
+
+            // Carregar o contrato
+            const contratoEndereco = 'CONTRATO_ENDERECO'; // Substituir pelo endereço do contrato
+            const contratoAbi = [
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "mensagem",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "string"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                }
+            ];
+            const contrato = new web3.eth.Contract(contratoAbi, contratoEndereco);
+
+            // Obter e exibir o conteúdo da variável de estado
+            contrato.methods.mensagem().call((error, result) => {
+                if (!error) {
+                    document.getElementById('mensagem').innerText = result;
+                } else {
+                    console.error(error);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
