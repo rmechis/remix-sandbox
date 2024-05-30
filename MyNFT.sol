@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract MyNFT is ERC721, Ownable {
     uint256 public tokenCounter;
 
-    constructor() ERC721("MyNFT", "NFT") {
+    constructor() ERC721("MyNFT", "NFT") Ownable(msg.sender) {
         tokenCounter = 0;
     }
 
