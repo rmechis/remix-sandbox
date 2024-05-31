@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -45,3 +45,5 @@ contract CountryNFT is ERC721, Ownable {
         return tokenIdToCountry[tokenId];
     }
 }
+
+//conta contrato: 0x87fcc6cd6c16367f165324a86c324df2740bb6d7
