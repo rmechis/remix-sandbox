@@ -11,16 +11,15 @@ contract CountryNFT is ERC721, Ownable {
     mapping(uint256 => string) private tokenIdToCountry;
 
     event NFTCreated(address to, uint256 tokenId, string country);
-    event Debug(string message);
 
-    constructor() ERC721("CountryNFT", "CNT") Ownable() {
+    constructor() ERC721("CountryNFT", "CNT") Ownable(msg.sender) {
         tokenCounter = 0;
         countries = ["Brazil", "Argentina", "Germany", "France", "Japan", "Australia", "Canada", "Italy", "Spain", "Portugal"];
     }
 
     function createNFT(address to) public onlyOwner returns (uint256) {
         require(tokenCounter < 10, "All NFTs have been minted");
-        
+
         string memory country = getRandomCountry();
         uint256 newTokenId = tokenCounter;
         _safeMint(to, newTokenId);
@@ -46,7 +45,11 @@ contract CountryNFT is ERC721, Ownable {
     }
 
     function getCountryByTokenId(uint256 tokenId) public view returns (string memory) {
-        require(_exists(tokenId), "Token ID does not exist");
+        require(_existsCustom(tokenId), "Token ID does not exist");
         return tokenIdToCountry[tokenId];
+    }
+
+    function _existsCustom(uint256 tokenId) internal view returns (bool) {
+        return _ownerOf(tokenId) != address(0);
     }
 }
