@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DApp CountryNFT</title>
+</head>
+<body>
+    <h1>CountryNFT DApp</h1>
+    <button id="connectButton">Conectar MetaMask</button>
+    <p id="walletAddress"></p>
+    
+    <h2>Criação de NFT</h2>
+    <button id="createNFTButton">Criar NFT</button>
+    
+    <h2>Consultar País por Token ID</h2>
+    <input type="number" id="tokenIdInput" placeholder="Token ID">
+    <button id="getCountryButton">Obter País</button>
+    <p id="countryDisplay"></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.3.5/dist/web3.min.js"></script>
+    <script>
+        const contractAddress = '0x87fcc6cd6c16367f165324a86c324df2740bb6d7';
+        const contractABI = [
+            {
+                "inputs": [],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "to",
+                        "type": "address"
+                    }
+                ],
+                "name": "createNFT",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "tokenId",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "getCountryByTokenId",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ];
+
+        let web3;
+        let contract;
+        let userAccount;
+
+        async function connectMetaMask() {
+            if (window.ethereum) {
+                try {
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    web3 = new Web3(window.ethereum);
+                    const accounts = await web3.eth.getAccounts();
+                    userAccount = accounts[0];
+                    document.getElementById('walletAddress').innerText = `Conectado: ${userAccount}`;
+                    contract = new web3.eth.Contract(contractABI, contractAddress);
+                } catch (error) {
+                    console.error('Usuário negou a conexão ao MetaMask', error);
+                }
+            } else {
+                alert('MetaMask não está instalado!');
+            }
+        }
+
+        async function createNFT() {
+            if (!userAccount || !contract) {
+                alert('Conecte-se ao MetaMask primeiro.');
+                return;
+            }
+            try {
+                const gasEstimate = await contract.methods.createNFT(userAccount).estimateGas({ from: userAccount });
+                await contract.methods.createNFT(userAccount).send({ from: userAccount, gas: gasEstimate });
+                alert('NFT criado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao criar NFT', error);
+                alert(`Erro ao criar NFT: ${error.message}`);
+            }
+        }
+
+        async function getCountryByTokenId() {
+            const tokenId = document.getElementById('tokenIdInput').value;
+            if (!tokenId || !contract) {
+                alert('Insira um Token ID válido e conecte-se ao MetaMask.');
+                return;
+            }
+            try {
+                const country = await contract.methods.getCountryByTokenId(tokenId).call();
+                document.getElementById('countryDisplay').innerText = `País: ${country}`;
+            } catch (error) {
+                console.error('Erro ao obter país', error);
+                alert(`Erro ao obter país: ${error.message}`);
+            }
+        }
+
+        document.getElementById('connectButton').addEventListener('click', connectMetaMask);
+        document.getElementById('createNFTButton').addEventListener('click', createNFT);
+        document.getElementById('getCountryButton').addEventListener('click', getCountryByTokenId);
+    </script>
+</body>
+</html>
